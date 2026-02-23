@@ -13,7 +13,7 @@
 #pragma diag_suppress 1296
 #elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winitialized"
+#pragma clang diagnostic ignored "-Wc99-extensions"
 #elif defined(__ICCARM__)
 #elif defined(__GNUC__)
 #endif
