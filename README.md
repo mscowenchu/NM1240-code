@@ -300,18 +300,20 @@ MotorA.other  // AMotorOther      - 其他狀態 (運行狀態、ECAP 值等)
 
 ### 需要的工具
 
-- **Keil MDK-ARM** (μVision 5)
+- **Keil MDK-ARM** (μVision 5 或更新版本，建議使用 ARM Compiler 6)
 - **Nu-Link Driver** (Nuvoton 燒錄/除錯工具)
 
 ### 建置步驟
 
-1. 用 Keil μVision 5 開啟專案檔：
+1. 用 Keil μVision 開啟專案檔：
    ```
    SampleCode/UserProj/NuMotor_NM1240/KEIL/NM1240_1R_2R_6stp_Hall_FOC.uvprojx
    ```
-2. 選擇 Build Target（預設已設定）
+2. 選擇 Build Target（預設已設定為 ARM Compiler 6）
 3. 點擊 **Build** (F7) 編譯
 4. 連接 Nu-Link，點擊 **Download** (F8) 燒錄
+
+> **注意：** 本專案已更新為支援 ARM Compiler 6 (armclang)。若需使用 ARM Compiler 5，請在 Project Options → Target 中切換編譯器版本。
 
 ---
 

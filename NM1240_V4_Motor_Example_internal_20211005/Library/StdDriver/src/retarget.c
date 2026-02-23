@@ -20,6 +20,8 @@
 /* Insist on keeping widthprec, to avoid X propagation by benign code in C-lib */
 #pragma import _printf_widthprec
 #endif
+#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+/* ARM Compiler 6 does not support #pragma import */
 #endif
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -30,7 +32,7 @@ struct __FILE {
     int handle; /* Add whatever you need here */
 };
 #endif
-#if defined ( __CC_ARM)
+#if defined ( __CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
 FILE __stdout;
 FILE __stdin;
 #endif
@@ -161,6 +163,43 @@ int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
  * @details  This function is implement to support semihost message print.
  *
  */
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+__attribute__((naked))
+void HardFault_Handler(void)
+{
+    __asm(
+        "MOV     R0, LR        \n"
+        "LSLS    R0, #29       \n"        //; Check bit 2
+        "BMI     SP_is_PSP     \n"        //; previous stack is PSP
+        "MRS     R0, MSP       \n"        //; previous stack is MSP, read MSP
+        "B       SP_Read_Ready \n"
+        "SP_is_PSP:            \n"
+        "MRS     R0, PSP       \n"        //; Read PSP
+        "SP_Read_Ready:        \n"
+        "LDR     R1, [R0, #24] \n"        //; Get previous PC
+        "LDRH    R3, [R1]      \n"        //; Get instruction
+        "LDR     R2, =0xBEAB   \n"        //; The specific BKPT instruction
+        "CMP     R3, R2        \n"        //; Test if the instruction at previous PC is BKPT
+        "BNE     HardFault_Handler_Ret\n" //; Not BKPT
+        "ADDS    R1, #4        \n"        //; Skip BKPT and next line
+        "STR     R1, [R0, #24] \n"        //; Save previous PC
+        "BX      LR            \n"        //; Return
+        "HardFault_Handler_Ret:\n"
+        "MOVS    r0, #4        \n"
+        "MOV     r1, LR        \n"
+        "TST     r0, r1        \n"
+        "BEQ     Stack_Use_MSP \n"
+        "MRS     R0, PSP       \n"        //; stack use PSP
+        "B       Get_LR_and_Branch\n"
+        "Stack_Use_MSP:        \n"
+        "MRS     R0, MSP       \n"        //; stack use MSP
+        "Get_LR_and_Branch:    \n"
+        "MOV     R1, LR        \n"        //; LR current value
+        "LDR     R2, =Hard_Fault_Handler\n"
+        "BX      R2            \n"
+    );
+}
+#else
 __asm int32_t HardFault_Handler(void)
 {
 
@@ -203,6 +242,7 @@ Get_LR_and_Branch
     
     ALIGN
 }
+#endif
 
 /**
  *
@@ -214,6 +254,28 @@ Get_LR_and_Branch
  * @retval     1: ICE debug
  *
  */
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+__attribute__((naked))
+int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+{
+    __asm(
+        "BKPT   0xAB          \n"  //; Wait ICE or HardFault
+        //; ICE will step over BKPT directly
+        //; HardFault will step BKPT and the next line
+        "B      SH_ICE        \n"
+        "SH_HardFault:        \n"  //; Captured by HardFault
+        "MOVS   R0, #0        \n"  //; Set return value to 0
+        "BX     lr            \n"  //; Return
+        "SH_ICE:              \n"  //; Captured by ICE
+        "CMP    R2, #0        \n"
+        "BEQ    SH_End        \n"
+        "STR    R0, [R2]      \n"  //; Save the return value to *pn32Out_R0
+        "SH_End:              \n"
+        "MOVS   R0, #1        \n"  //; Set return value to 1
+        "BX     lr            \n"  //; Return
+    );
+}
+#else
 __asm int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 {
     BKPT   0xAB          //; Wait ICE or HardFault
@@ -235,6 +297,7 @@ SH_End
     MOVS   R0, #1        //; Set return value to 1
     BX     lr            //; Return
 }
+#endif
 #endif
 
 
@@ -282,6 +345,26 @@ void HardFault_Handler(void)
  * @details  This function is implement to print r0, r1, r2, r3, r12, lr, pc, psr
  *
  */
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+__attribute__((naked))
+void HardFault_Handler(void)
+{
+    __asm(
+        "MOVS    r0, #4        \n"
+        "MOV     r1, LR        \n"
+        "TST     r0, r1        \n"
+        "BEQ     Stack_Use_MSP \n"
+        "MRS     R0, PSP       \n"        //; stack use PSP
+        "B       Get_LR_and_Branch\n"
+        "Stack_Use_MSP:        \n"
+        "MRS     R0, MSP       \n"        //; stack use MSP
+        "Get_LR_and_Branch:    \n"
+        "MOV     R1, LR        \n"        //; LR current value
+        "LDR     R2, =Hard_Fault_Handler\n"
+        "BX      R2            \n"
+    );
+}
+#else
 __asm int32_t HardFault_Handler(void)
 {
     MOVS    r0, #4 
@@ -297,6 +380,7 @@ Get_LR_and_Branch
     LDR     R2,=__cpp(Hard_Fault_Handler) 
     BX      R2                  
 }
+#endif
 
 #endif
 
@@ -423,7 +507,7 @@ void SendChar(int ch)
 char GetChar(void)
 {
 #ifdef DEBUG_ENABLE_SEMIHOST
-# if defined ( __CC_ARM   )
+# if defined ( __CC_ARM   ) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
     int nRet;
     while(SH_DoCommand(0x101, 0, &nRet) != 0) {
         if(nRet != 0) {
