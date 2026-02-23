@@ -1,0 +1,36 @@
+# Keil MDK build artifacts
+*.o
+*.d
+*.axf
+*.hex
+*.bin
+*.map
+*.lst
+*.htm
+*.dep
+*.crf
+*.lnp
+*.build_log.htm
+*.uvguix.*
+Objects/
+Listings/
+RTE/_*/
+
+# IAR build artifacts
+Debug/
+Release/
+settings/
+*.dep
+*.ewt
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
