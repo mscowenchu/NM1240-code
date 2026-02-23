@@ -126,6 +126,9 @@ typedef enum IRQn
 
 #if defined ( __CC_ARM   )
 #pragma anon_unions
+#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc11-extensions"
 #endif
 
 /******************************************************************************/

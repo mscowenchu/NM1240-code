@@ -11,6 +11,9 @@
 #if defined(__CC_ARM)
 // Suppress warning message: extended constant initialiser used
 #pragma diag_suppress 1296
+#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-extensions"
 #elif defined(__ICCARM__)
 #elif defined(__GNUC__)
 #endif
@@ -613,11 +616,11 @@ void Initialize_FMC()
   if((au32Config[0] == 0xFFFFFFFF) && (au32Config[1] == 0xFFFFFFFF)) //Check CONFIG 0 & 1 , if not set , write set value
   {
     FMC_Erase(FMC_CONFIG_BASE);
-    FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE ); //Write setting to CONFIG 0 ¡A set DEFN = 0 (enable data flash)
+    FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE ); //Write setting to CONFIG 0 ï¿½A set DEFN = 0 (enable data flash)
 //    au32Config[0] = FMC_Read(FMC_CONFIG_BASE);
 
     FMC_Erase(FMC_CONFIG_BASE + 4);
-    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ¡A set Data Flash Base Address
+    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ï¿½A set Data Flash Base Address
 //    au32Config[1] = FMC_Read(FMC_CONFIG_BASE+4);
   }
   
@@ -625,10 +628,10 @@ void Initialize_FMC()
   {
     FMC_Erase(FMC_CONFIG_BASE);
     FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE);
-//    au32Config[0] = FMC_Read(FMC_CONFIG_BASE); //Write setting to CONFIG 0 ¡A set DEFN = 0 (enable data flash)
+//    au32Config[0] = FMC_Read(FMC_CONFIG_BASE); //Write setting to CONFIG 0 ï¿½A set DEFN = 0 (enable data flash)
     
     FMC_Erase(FMC_CONFIG_BASE + 4);
-    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ¡A set Data Flash Base Address
+    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ï¿½A set Data Flash Base Address
 //    au32Config[1] = FMC_Read(FMC_CONFIG_BASE+4);
   }
   
