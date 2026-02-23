@@ -8,6 +8,9 @@
 // * Copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
 //****************************************************************************************************************************************
 
+#ifndef __SVPWM_H__
+#define __SVPWM_H__
+
 #include "NM1240.h"
 #include "variable_typedefine.h"
 
@@ -88,3 +91,5 @@ typedef struct tag_Motor
 AMotor MotorA;
   
 */
+
+#endif

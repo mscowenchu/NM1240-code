@@ -10,7 +10,7 @@
 uint8_t u8_flag_VSP_control, u8_flag_UART_control;
 uint16_t u16_Duty_UART,u16_Duty_VSP;
 // For 1ms Timer0 Interrupt use. To count global time 1ms, 10ms, 100ms
-uint8_t u8_flag_1ms, u8_flag_10ms, u8_flag_10ms, u8_flag_100ms, u8_flag_500ms;
+uint8_t u8_flag_1ms, u8_flag_10ms, u8_flag_100ms, u8_flag_500ms;
 uint16_t u16_timer0_int_counter, u16_1ms_timer_counter, u16_10ms_time_counter, \
        u16_100ms_time_counter, u16_500ms_time_counter;
 
