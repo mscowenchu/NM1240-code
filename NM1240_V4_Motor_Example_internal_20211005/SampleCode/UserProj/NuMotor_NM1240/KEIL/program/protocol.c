@@ -613,11 +613,11 @@ void Initialize_FMC()
   if((au32Config[0] == 0xFFFFFFFF) && (au32Config[1] == 0xFFFFFFFF)) //Check CONFIG 0 & 1 , if not set , write set value
   {
     FMC_Erase(FMC_CONFIG_BASE);
-    FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE ); //Write setting to CONFIG 0 ¡A set DEFN = 0 (enable data flash)
+    FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE ); //Write setting to CONFIG 0 ï¿½A set DEFN = 0 (enable data flash)
 //    au32Config[0] = FMC_Read(FMC_CONFIG_BASE);
 
     FMC_Erase(FMC_CONFIG_BASE + 4);
-    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ¡A set Data Flash Base Address
+    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ï¿½A set Data Flash Base Address
 //    au32Config[1] = FMC_Read(FMC_CONFIG_BASE+4);
   }
   
@@ -625,10 +625,10 @@ void Initialize_FMC()
   {
     FMC_Erase(FMC_CONFIG_BASE);
     FMC_Write(FMC_CONFIG_BASE, 0xFFFFFFFE);
-//    au32Config[0] = FMC_Read(FMC_CONFIG_BASE); //Write setting to CONFIG 0 ¡A set DEFN = 0 (enable data flash)
+//    au32Config[0] = FMC_Read(FMC_CONFIG_BASE); //Write setting to CONFIG 0 ï¿½A set DEFN = 0 (enable data flash)
     
     FMC_Erase(FMC_CONFIG_BASE + 4);
-    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ¡A set Data Flash Base Address
+    FMC_Write(FMC_CONFIG_BASE + 4, DATA_FLASH_BASE);  //Write setting to CONFIG 1 ï¿½A set Data Flash Base Address
 //    au32Config[1] = FMC_Read(FMC_CONFIG_BASE+4);
   }
   
@@ -725,7 +725,7 @@ void read_data_flash_to_CMD_temp()
     for(cmd_index = 0; cmd_index < GROUP3_CMD_SIZE; cmd_index++)
     {
         data_flash_temp.LONG = FMC_Read(DATA_FLASH_BASE + (cmd_index + 60) * 4);
-        switch(GROUP1_CMD_LIST[cmd_index].bit_mask.LONG)
+        switch(GROUP3_CMD_LIST[cmd_index].bit_mask.LONG)
         {
             case B32_Mask:
                 GROUP3_CMD_temp[cmd_index].data.Word.HWord = data_flash_temp.Word.HWord;
